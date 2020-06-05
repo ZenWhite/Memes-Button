@@ -1,0 +1,10 @@
+{
+	"memes" : [
+		{
+			"name" : "BRUH",
+			"audio" : "./audio/",
+			"image" : "./img/",
+			"src" : "https://google.com"
+		}
+	]
+}
