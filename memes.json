@@ -1,7 +1,15 @@
 {
 	"memes" : [
 		{
+			"id" : "1",
 			"name" : "BRUH",
+			"audio" : "./audio/bruh.mp3",
+			"image" : "./img/bruh.webp",
+			"src" : "https://google.com"
+		},
+		{
+			"id" : "2",
+			"name" : "Чё там с деньгами?",
 			"audio" : "./audio/",
 			"image" : "./img/",
 			"src" : "https://google.com"
