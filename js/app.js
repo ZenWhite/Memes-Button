@@ -1,37 +1,46 @@
 window.addEventListener('DOMContentLoaded', () => {
-
-    //UI
-    
     //Main Meme Circle Class
     class Meme {
         constructor(options) {
-            /*
-                {
-                    id: 1,
-                    name: 'Test',
-                    src: 'https://google.com'
-                    audio: './audio/test.mp3',
-                    image: './img/test.png'
-                }
-
-                Options Object
-            */
             this.options = options;
-            this.render();
+            this.el = document.createElement('div');
             this.events();
         }
         render() {
-            const el = document.createElement('div');
-            el.classList.add('options-page__item');
-            el.id = this.options.id;
+            this.el.classList.add('options-page__item', 'meme');
+            this.el.id = this.options.id;
+            this.el.style.background = `url(${this.options.image}) no-repeat center center`;
+            this.el.style.backgroundSize = '100%';
+            this.el.style.filter = 'opacity(0.9) grayscale(0.5)';
+
+            return this.el;
         }
         events() {
             return;
         }
-        setActiveMeme() {
-            return;
+        static setActiveMeme(id) {
+            const el = document.querySelector(`.meme[id="${id}"]`);
+            const meme = memes.get( id.toString() );
+            el.style.filter = 'opacity(1) grayscale(1)';
+            document.body.style.background = `url(${meme.image}) no-repeat center center`;
+            document.body.style.backgroundSize = 'cover';
+            play.dataset.audio = meme.audio;
+            console.log(meme);
         }
     }
+
+    //Main Memes Container
+    const memes = new Map();
+
+    //UI
+    const play = document.querySelector('.play');
+    const memeGrid = document.querySelector('.options-page__block');
+
+    //Events
+    play.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('play!');
+    });
 
     const getMemes = async () => {//Get Memes From JSON File(My Fake Database)
         try {
@@ -45,17 +54,25 @@ window.addEventListener('DOMContentLoaded', () => {
 
     (async () => {//Main Module. I Run Code This
         try {
-            const memes = new Map();
-
             await getMemes().then(data => {
-                data.forEach(dataItem => memes.set(dataItem.id, dataItem));
+                data.memes.forEach(dataItem => memes.set(dataItem.id, dataItem));
             });
-
-            memes.forEach(item => {
-                console.log(item);
-            });
+            renderMemes();
         } catch(err) {
             console.log(err);
         }
     })();
+
+    function renderMemes() {
+        const fragment = document.createDocumentFragment();
+
+        memes.forEach(({id, name, src, audio, image}) => {
+            const meme = new Meme({id,name,src,audio,image});
+            const memeBlock = meme.render();
+            fragment.appendChild(memeBlock);
+        });
+
+        memeGrid.appendChild(fragment);
+        Meme.setActiveMeme(1);
+    }
 });
