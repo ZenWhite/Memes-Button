@@ -9,23 +9,28 @@ window.addEventListener('DOMContentLoaded', () => {
         render() {
             this.el.classList.add('options-page__item', 'meme');
             this.el.id = this.options.id;
-            this.el.style.background = `url(${this.options.image}) no-repeat center center`;
-            this.el.style.backgroundSize = '100%';
-            this.el.style.filter = 'opacity(0.9) grayscale(0.5)';
-
+            this.el.style.background = `url(${this.options.image}) no-repeat center center/100%`;
             return this.el;
         }
         events() {
-            return;
+            document.body.addEventListener('click', ({target}) => {
+                if(target.classList.contains('meme')) {
+                    Meme.setActiveMeme(target.id);
+                }
+            });
         }
         static setActiveMeme(id) {
+            const prev  = document.querySelector('.active');
             const el = document.querySelector(`.meme[id="${id}"]`);
             const meme = memes.get( id.toString() );
-            el.style.filter = 'opacity(1) grayscale(1)';
-            document.body.style.background = `url(${meme.image}) no-repeat center center`;
+
+            if(prev) prev.classList.remove('active');
+            el.classList.add('active');
+
+            document.body.style.background = `url(${meme.image}) no-repeat center center, rgba(39,39,39,0.9)`;
             document.body.style.backgroundSize = 'cover';
+
             play.dataset.audio = meme.audio;
-            console.log(meme);
         }
     }
 
@@ -39,7 +44,8 @@ window.addEventListener('DOMContentLoaded', () => {
     //Events
     play.addEventListener('click', function(e) {
         e.preventDefault();
-        console.log('play!');
+        /*const audio = new Audio(play.dataset.audio);
+        audio.play();*/
     });
 
     const getMemes = async () => {//Get Memes From JSON File(My Fake Database)
@@ -65,6 +71,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function renderMemes() {
         const fragment = document.createDocumentFragment();
+        const wrap = document.createElement('div');
+        wrap.classList.add('wrap');
 
         memes.forEach(({id, name, src, audio, image}) => {
             const meme = new Meme({id,name,src,audio,image});
@@ -72,7 +80,8 @@ window.addEventListener('DOMContentLoaded', () => {
             fragment.appendChild(memeBlock);
         });
 
-        memeGrid.appendChild(fragment);
+        wrap.appendChild(fragment);
+        memeGrid.appendChild(wrap);
         Meme.setActiveMeme(1);
     }
 });
