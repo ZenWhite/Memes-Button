@@ -30,12 +30,13 @@ window.addEventListener('DOMContentLoaded', () => {
             document.body.style.background = `url(${meme.image}) no-repeat center center, rgba(39,39,39,0.9)`;
             document.body.style.backgroundSize = 'cover';
 
-            play.dataset.audio = meme.audio;
+            audio.src = meme.audio;
         }
     }
 
     //Main Memes Container
     const memes = new Map();
+    const audio = document.getElementById('audio');
 
     //UI
     const play = document.querySelector('.play');
@@ -44,8 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //Events
     play.addEventListener('click', function(e) {
         e.preventDefault();
-        /*const audio = new Audio(play.dataset.audio);
-        audio.play();*/
+        audio.play();
     });
 
     const getMemes = async () => {//Get Memes From JSON File(My Fake Database)
@@ -58,18 +58,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    (async () => {//Main Module. I Run Code This
-        try {
-            await getMemes().then(data => {
-                data.memes.forEach(dataItem => memes.set(dataItem.id, dataItem));
-            });
-            renderMemes();
-        } catch(err) {
-            console.log(err);
-        }
-    })();
-
-    function renderMemes() {
+    const renderMemes = () => {
         const fragment = document.createDocumentFragment();
         const wrap = document.createElement('div');
         wrap.classList.add('wrap');
@@ -84,4 +73,15 @@ window.addEventListener('DOMContentLoaded', () => {
         memeGrid.appendChild(wrap);
         Meme.setActiveMeme(1);
     }
+
+    (async () => {//Main Module. Rendering Memes Circles and set meme in memes
+        try {
+            await getMemes().then(data => {
+                data.memes.forEach(dataItem => memes.set(dataItem.id, dataItem));
+            });
+            renderMemes();
+        } catch(err) {
+            console.log(err);
+        }
+    })();
 });
