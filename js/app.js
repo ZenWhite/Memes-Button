@@ -31,6 +31,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             document.body.style.background = `url(${meme.image}) no-repeat center center, rgba(39,39,39,0.9)`;
             document.body.style.backgroundSize = 'cover';
+            memeName.textContent = meme.name;
 
             audio.src = meme.audio;
         }
@@ -44,6 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const play = document.querySelector('.play');
     const memeGrid = document.querySelector('.options-page__block');
     const mainBlock = document.querySelector('main');
+    const memeName = document.querySelector('.name');
 
     //Events
     play.addEventListener('click', onPlayBtnClick);
